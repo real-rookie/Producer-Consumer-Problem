@@ -180,6 +180,7 @@ int main(int argc, char *argv[]){
     int fd = creat(file_path.c_str(), S_IRWXU);
     assert((fd != -1));
     assert((dup2(fd, STDOUT_FILENO) != -1));
+    assert((close(fd)) == 0);
 
     assert((sem_init(&empty, 0, buffer_size) == 0));  // initially all slots are empty
     assert((sem_init(&full, 0, 0) == 0));  // initially no slots are full
