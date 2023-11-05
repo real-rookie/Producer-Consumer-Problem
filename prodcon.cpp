@@ -53,7 +53,7 @@ void log(pthread_t t_id, Actions action, int n){
     if(action == Actions::RECEIVE || action == Actions::WORK){
         oss << "Q= " << buffer.size() << '\t';
     }else{
-        oss << "\t"; // FIXME, one for shell, two t's for files
+        oss << "\t";
     }
     switch(action){
         case ASK:
@@ -78,7 +78,7 @@ void log(pthread_t t_id, Actions action, int n){
     assert((pthread_mutex_unlock(&mutex_log) == 0));
 }
 
-void summery(stat_producer &stat_p, std::vector<stat_consumer> &stat_c){
+void summary(stat_producer &stat_p, std::vector<stat_consumer> &stat_c){
     using namespace std::chrono;
     auto end = std::chrono::steady_clock::now();
     int ask = 0;
@@ -199,5 +199,5 @@ int main(int argc, char *argv[]){
         assert((pthread_join(thread.first, nullptr) == 0)); // can be used to retrieve consumer stat
     }
 
-    summery(stat_p, stat_c);
+    summary(stat_p, stat_c);
 }
