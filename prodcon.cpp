@@ -2,17 +2,21 @@
 #include <semaphore.h>
 #include <chrono>
 #include <iostream>
+#include <iomanip>
 #include <cassert>
 #include <queue>
 #include <string>
 #include <unordered_map>
 #include <sstream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 void Trans( int n );
 void Sleep( int n );
 enum Actions{ASK, RECEIVE, WORK, SLEEP, COMPLETE, END};
 
-int log_id;
 std::queue<int> buffer;
 std::unordered_map<pthread_t, int> threads;
 decltype(std::chrono::steady_clock::now()) begin;
@@ -28,12 +32,15 @@ void log(pthread_t t_id, Actions action, int n){
     pthread_mutex_lock(&mutex_log);
     auto end = std::chrono::steady_clock::now();
     std::ostringstream oss;
-    oss << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\t';
+    oss << std::setw(8) 
+        << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
+        << std::setw(0) 
+        << '\t';
     oss << "ID= " << threads[t_id] << '\t';
     if(action == Actions::RECEIVE || action == Actions::WORK){
         oss << "Q= " << buffer.size() << '\t';
     }else{
-        oss << "\t";
+        oss << "\t"; // FIXME, one for shell, two t's for files
     }
     switch(action){
         case ASK:
@@ -97,10 +104,15 @@ int main(int argc, char *argv[]){
     begin = std::chrono::steady_clock::now();
     int n_consumers = atoi(argv[1]);
     int buffer_size = n_consumers * 2;
-    log_id = 0;
-    if(argc == 3){
-        log_id = atoi(argv[2]);
-    }
+    // write logs to file
+    // const char *log_id = "0";
+    // if(argc == 3){
+    //     log_id = argv[2];
+    // }
+    // std::string file_path = "prodcon." + std::string(log_id) + ".log";
+    // int fd = creat(file_path.c_str(), S_IRWXU);
+    // assert((fd != -1));
+    // assert((dup2(fd, STDOUT_FILENO) != -1));
 
     assert((sem_init(&empty, 0, buffer_size) == 0));  // initially all slots are empty
     assert((sem_init(&full, 0, 0) == 0));  // initially no slots are full

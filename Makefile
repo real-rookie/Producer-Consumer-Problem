@@ -15,4 +15,4 @@ run:
 memcheck:
 	valgrind --tool=memcheck --leak-check=full ./$(main)
 clean:
-	rm -f $(main) *.o 
+	rm -f $(main) *.o *.log
