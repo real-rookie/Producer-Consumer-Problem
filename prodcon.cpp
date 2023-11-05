@@ -171,15 +171,15 @@ int main(int argc, char *argv[]){
     begin = std::chrono::steady_clock::now();
     int n_consumers = atoi(argv[1]);
     int buffer_size = n_consumers * 2;
-    // write logs to file
-    // const char *log_id = "0";
-    // if(argc == 3){
-    //     log_id = argv[2];
-    // }
-    // std::string file_path = "prodcon." + std::string(log_id) + ".log";
-    // int fd = creat(file_path.c_str(), S_IRWXU);
-    // assert((fd != -1));
-    // assert((dup2(fd, STDOUT_FILENO) != -1));
+    //write logs to file
+    const char *log_id = "0";
+    if(argc == 3){
+        log_id = argv[2];
+    }
+    std::string file_path = "prodcon." + std::string(log_id) + ".log";
+    int fd = creat(file_path.c_str(), S_IRWXU);
+    assert((fd != -1));
+    assert((dup2(fd, STDOUT_FILENO) != -1));
 
     assert((sem_init(&empty, 0, buffer_size) == 0));  // initially all slots are empty
     assert((sem_init(&full, 0, 0) == 0));  // initially no slots are full
