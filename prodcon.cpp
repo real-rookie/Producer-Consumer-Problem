@@ -21,6 +21,7 @@ pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_log = PTHREAD_MUTEX_INITIALIZER;
 sem_t empty;  // empty slots in the buffer
 sem_t full;  // full slots in the buffer
+bool producer_done = false;
 
 // TODO time elapsed
 void log(pthread_t t_id, Actions action, int n){
@@ -67,15 +68,17 @@ void *producer(void* arg){
                 log(pthread_self(), Actions::WORK, n);
             assert((pthread_mutex_unlock(&mutex_buffer) == 0));
             assert((sem_post(&full) == 0));
-        }else if(cmd[1] == 'S'){
-
+        }else if(cmd[0] == 'S'){
+            log(pthread_self(), Actions::SLEEP, n);
+            Sleep(n);
         }
     }
     log(pthread_self(), Actions::END, -1);
+    producer_done = true;
 }
 
 void *consumer(void* arg){
-    while(1){
+    while(!producer_done || buffer.size()){
         log(pthread_self(), Actions::ASK, -1);
         assert((sem_wait(&full) == 0));
         assert((pthread_mutex_lock(&mutex_buffer) == 0));
