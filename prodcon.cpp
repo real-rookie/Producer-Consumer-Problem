@@ -197,7 +197,7 @@ int main(int argc, char *argv[]){
     }
 
     for(auto thread : threads){
-        assert((pthread_join(thread.first, nullptr) == 0)); // can be used to retrieve consumer stat
+        assert((pthread_join(thread.first, nullptr) == 0));
     }
 
     summary(stat_p, stat_c);
