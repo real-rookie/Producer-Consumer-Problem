@@ -29,7 +29,7 @@ bool producer_done = false;
 
 // TODO time elapsed
 void log(pthread_t t_id, Actions action, int n){
-    pthread_mutex_lock(&mutex_log);
+    assert((pthread_mutex_lock(&mutex_log) == 0));
     auto end = std::chrono::steady_clock::now();
     std::ostringstream oss;
     oss << std::setw(8) 
@@ -60,7 +60,7 @@ void log(pthread_t t_id, Actions action, int n){
         oss << n;
     }
     std::cout << oss.str() << std::endl;
-    pthread_mutex_unlock(&mutex_log);
+    assert((pthread_mutex_unlock(&mutex_log) == 0));
 }
 
 void *producer(void* arg){
