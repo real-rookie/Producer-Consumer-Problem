@@ -1,0 +1,2 @@
+# Description
+This program solves the Producer-Consumer problem by using two semaphores and a mutex. One of the semaphores is for counting available spots in the shared data structure, and the other is for counting taken spots. The mutex is to prevent the producer/consumer from writing/reading the shared data structure simultaneously. When the producer is done, a poison pill is written to the shared data structure to terminate the consumer.
